@@ -4,7 +4,7 @@
  * Description: Muestra el número de suscriptores y visualizaciones de un canal de YouTube mediante shortcodes.
  * Version: 1.3
  * Author: Juanma Aranda
- * Author URL: https://wpnovatos.com
+ * Author URI: https://wpnovatos.com
  */
 
 
