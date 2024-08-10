@@ -7,7 +7,6 @@
  * Author URI: https://wpnovatos.com
  */
 
-
 if (!defined('ABSPATH')) {
     exit; // Salir si se accede directamente
 }
@@ -15,18 +14,51 @@ if (!defined('ABSPATH')) {
 // Agregar la opción de configuración al menú de administración
 add_action('admin_menu', 'ys_add_admin_menu');
 add_action('admin_init', 'ys_settings_init');
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'ys_add_settings_link');
 
 function ys_add_admin_menu() {
-    add_menu_page(
-        'YouTube Stats', // Título de la página
-        'YouTube Stats', // Título del menú
-        'manage_options', // Capacidad
-        'youtube_stats', // Slug
-        'ys_options_page', // Función de contenido
-        'dashicons-youtube', // Icono del menú
-        100 // Posición
+    // URL del icono personalizado
+    $icon_url = 'https://juanmaaranda.com/wp-content/uploads/2024/08/wpnovatos-byn-20.png';
+    
+    // Verificar si el menú "WPnovatos" ya existe
+    global $menu;
+    $wpnovatos_exists = false;
+    
+    foreach ($menu as $menu_item) {
+        if ($menu_item[2] === 'wpnovatos') {
+            $wpnovatos_exists = true;
+            break;
+        }
+    }
+    
+    // Si no existe, crear el menú "WPnovatos"
+    if (!$wpnovatos_exists) {
+        add_menu_page(
+            '', // Título de la página (vacío para que no sea clicable)
+            'WPnovatos', // Título del menú
+            'manage_options', // Capacidad
+            'wpnovatos', // Slug del menú
+            '__return_null', // Función de contenido (null para que no sea clicable)
+            $icon_url, // Icono del menú
+            3 // Posición
+        );
+    }
+    
+    // Añadir el submenú "YouTube Stats" bajo "WPnovatos"
+    add_submenu_page(
+        'wpnovatos',               // Slug del menú principal
+        'YouTube Stats',       // Título de la página
+        'YouTube Stats',       // Título del submenú
+        'manage_options',          // Capacidad requerida
+        'youtube_stats', // Slug del submenú
+        'ys_options_page' // Función que muestra la página de ajustes
     );
+ 
+    
+  // Remover el enlace duplicado "WPnovatos" del submenú
+    remove_submenu_page('wpnovatos', 'wpnovatos');
 }
+
 
 function ys_settings_init() {
     register_setting('pluginPage', 'ys_settings', 'ys_settings_validate');
@@ -200,5 +232,13 @@ function ys_show_views() {
         return "No se pudo obtener el número de visualizaciones.";
     }
 }
+
+// Añadir enlace de "Ajustes" en la lista de plugins
+function ys_add_settings_link($links) {
+    $settings_link = '<a href="admin.php?page=youtube_stats">' . __('Ajustes') . '</a>';
+    array_push($links, $settings_link);
+    return $links;
+}
 ?>
+
 
