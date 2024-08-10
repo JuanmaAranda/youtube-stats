@@ -35,7 +35,7 @@
    - En la URL del navegador, copia la parte después de "channel/" (por ejemplo, UC_x5XG1OV2P6uZZ5FSM9Ttw).
 
 3. **Configurar el plugin en WordPress**:
-   - Ve a **YouTube Stats** en el menú de administración de WordPress.
+   - Ve a **WPnovatos > YouTube Stats** en el menú de administración de WordPress.
    - Ingresa la API Key y el ID del Canal en los campos correspondientes y guarda los cambios.
 
    Si los datos son válidos, verás un mensaje de confirmación en verde. Si hay algún error, se mostrará un mensaje en rojo indicándote qué datos deben ser revisados.
