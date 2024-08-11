@@ -6,6 +6,7 @@
 
 - Muestra el número de suscriptores del canal.
 - Muestra el número de visualizaciones del canal.
+- Muestra el número de vídeos publicados en el canal.
 - Configuración sencilla a través del panel de administración de WordPress.
 - Shortcodes fáciles de usar para integrar en páginas y entradas.
 
@@ -46,6 +47,7 @@ Una vez que hayas configurado el plugin, puedes utilizar los siguientes shortcod
 
 - **Número de suscriptores**: `[youtube_suscribers]`
 - **Número de visualizaciones**: `[youtube_views]`
+- **Número de vídeos**: `[youtube_videos]`
 
 ## Ejemplo
 
