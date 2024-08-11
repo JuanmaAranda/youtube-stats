@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: YouTube Stats
- * Description: Muestra el número de suscriptores y visualizaciones de un canal de YouTube mediante shortcodes.
- * Version: 1.3
+ * Description: Muestra el número de suscriptores, visualizaciones y vídeos publicados de un canal de YouTube mediante shortcodes.
+ * Version: 1.4
  * Author: Juanma Aranda
  * Author URI: https://wpnovatos.com
  */
@@ -59,7 +59,6 @@ function ys_add_admin_menu() {
     remove_submenu_page('wpnovatos', 'wpnovatos');
 }
 
-
 function ys_settings_init() {
     register_setting('pluginPage', 'ys_settings', 'ys_settings_validate');
 
@@ -102,7 +101,7 @@ function ys_channel_id_render() {
 }
 
 function ys_settings_section_callback() {
-    echo __('Introduce tu API Key de YouTube y el ID del Canal para obtener el número de suscriptores y visualizaciones.', 'wordpress');
+    echo __('Introduce tu API Key de YouTube y el ID del Canal para obtener el número de suscriptores, visualizaciones y vídeos publicados.', 'wordpress');
 }
 
 function ys_options_page() {
@@ -146,6 +145,8 @@ function ys_options_page() {
             <p><code>[youtube_suscribers]</code></p>
             <p>Para mostrar el número de visualizaciones en cualquier página o entrada, añade el siguiente shortcode:</p>
             <p><code>[youtube_views]</code></p>
+            <p>Para mostrar el número de vídeos publicados en cualquier página o entrada, añade el siguiente shortcode:</p>
+            <p><code>[youtube_videos]</code></p>
         </form>
     </div>
     <?php
@@ -233,6 +234,35 @@ function ys_show_views() {
     }
 }
 
+// Shortcode para mostrar el número de vídeos publicados
+add_shortcode('youtube_videos', 'ys_show_videos');
+
+function ys_show_videos() {
+    $options = get_option('ys_settings');
+    $api_key = $options['ys_api_key'];
+    $channel_id = $options['ys_channel_id'];
+
+    if (!$api_key || !$channel_id) {
+        return "Por favor configure su API Key y ID del Canal en la página de ajustes del plugin.";
+    }
+
+    $response = wp_remote_get("https://www.googleapis.com/youtube/v3/channels?part=statistics&id={$channel_id}&key={$api_key}");
+
+    if (is_wp_error($response)) {
+        return "Error al obtener los datos del canal.";
+    }
+
+    $body = wp_remote_retrieve_body($response);
+    $data = json_decode($body, true);
+
+    if (isset($data['items'][0]['statistics']['videoCount'])) {
+        $video_count = $data['items'][0]['statistics']['videoCount'];
+        return number_format($video_count, 0, '', '.');
+    } else {
+        return "No se pudo obtener el número de vídeos publicados.";
+    }
+}
+
 // Añadir enlace de "Ajustes" en la lista de plugins
 function ys_add_settings_link($links) {
     $settings_link = '<a href="admin.php?page=youtube_stats">' . __('Ajustes') . '</a>';
@@ -240,5 +270,3 @@ function ys_add_settings_link($links) {
     return $links;
 }
 ?>
-
-
